@@ -1,0 +1,34 @@
+
+wget http://nematodes.org/teaching/bioinformatics/nem.fasta
+#download fasta file online
+
+makeblastdb -in nem.fasta -dbtype prot -out nem
+#make it a database
+
+wget -O testsequence.fasta "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nuccore&id=NC_015119.1&strand=1&seq_start=1426&seq_stop=2962&rettype=fasta&retmode=text"
+#download query fasta from ncbi, reference on writing link: https://www.ncbi.nlm.nih.gov/books/NBK25501/
+#-O testsequence.fasta (the Output file)
+#efetch.fcgi? (NCBI utilities, described from https://www.ncbi.nlm.nih.gov/books/NBK25501/)
+#db=nuccore (database)
+#id=NC_015119.1 (AccessionID)
+#strand=1 (top strand)
+#seq_start=1426 (start from base 1426 of the sequence)
+#seq_stop=2962 (stop at base 2962 of the sequence)
+#rettype=fasta (return in fasta format)
+#retmode=text (return in plain text format)
+
+blastx -db nem -query testsequence.fasta > blastoutput.out
+#blast against local database
+
+update_blastdb.pl --showall
+#list all available databases on ncbi
+
+blastx -remote -db swissprot -query testsequence.fasta > blastoutput2.out
+#blast remotely without having to download database
+
+blastx -remote -db swissprot -query testsequence.fasta -outfmt 7 > blastoutput3.out
+#blast remotely and show in columns
+
+git add *
+
+git commit -m "241008_blastdb practice"
